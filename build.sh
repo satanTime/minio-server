@@ -50,4 +50,3 @@ done
 rm .url
 git add --all
 git commit -m "Update on $(date +%Y-%m-%d)"
-git push
