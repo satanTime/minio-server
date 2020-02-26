@@ -8,9 +8,15 @@ if [[ $URL == "" ]]; then
 fi
 
 while [[ $URL != "" ]]; do
-    echo $URL
     echo $URL > .url
-    content=$(curl -s $URL)
+
+    exitCode=1
+    while [[ $exitCode != 0 ]]; do
+        content=$(curl -s $URL)
+        exitCode=$?
+        echo "$exitCode - $URL"
+    done
+
     URL=$(
         echo $content | \
         grep -oE '"next":"https://registry.hub.docker.com/v2/[^"]+"' | \
@@ -24,15 +30,21 @@ while [[ $URL != "" ]]; do
         sed -e 's/"$//'
     )
     for tag in $tags; do
-        echo $tag
+        exitCode=1
+        while [[ $exitCode != 0 ]]; do
+            content=$(curl -s https://registry.hub.docker.com/v2/repositories/minio/minio/tags/$tag)
+            exitCode=$?
+            echo "$exitCode - https://registry.hub.docker.com/v2/repositories/minio/minio/tags/$tag"
+        done
+
         digestCurrent=$(
-            curl -s https://registry.hub.docker.com/v2/repositories/minio/minio/tags/$tag | \
+            echo $content | \
             grep -oE '"digest":"[^"]+"' | \
             sed -e 's/^"digest":"//' | \
             sed -e 's/"$//'
         )
         digestOld=$(cat hashes/$tag 2> /dev/null)
-        if [[ $digestCurrent != $digestOld ]]; then
+        if [[ $digestCurrent != $digestOld ]] && [[ $digestCurrent != "" ]]; then
             docker pull minio/minio:$tag
             docker pull satantime/minio-server:$tag
             echo "FROM minio/minio:${tag}" > Dockerfile && \
