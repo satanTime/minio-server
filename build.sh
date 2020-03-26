@@ -54,7 +54,7 @@ while [[ $URL != "" ]]; do
             rm Dockerfile && \
             printf '%s\n' $digestCurrent > hashes/$tag && \
             git add --all && \
-            git commit -m "Update on $(date +%Y-%m-%d)" && \
+            git commit -m "Update of ${tag} on $(date +%Y-%m-%d)" && \
             sleep 0;
         fi
         sleep 0;
