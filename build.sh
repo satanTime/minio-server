@@ -52,9 +52,9 @@ while [[ $URL != "" ]]; do
             docker build . -t satantime/minio-server:$tag && \
             docker push satantime/minio-server:$tag && \
             rm Dockerfile && \
+            printf '%s\n' $digestCurrent > hashes/$tag && \
             git add --all && \
             git commit -m "Update on $(date +%Y-%m-%d)" && \
-            printf '%s\n' $digestCurrent > hashes/$tag
             sleep 0;
         fi
         sleep 0;
