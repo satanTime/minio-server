@@ -27,7 +27,9 @@ while [[ $URL != "" ]]; do
         echo $content | \
         grep -oE '"name":"[^"]+"' | \
         sed -e 's/^"name":"//' | \
-        sed -e 's/"$//'
+        sed -e 's/"$//' | \
+        grep -vE "^edge.*" | \
+        grep -vE '^[^-]{4}-.*'
     )
     for tag in $tags; do
         exitCode=1
