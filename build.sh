@@ -29,7 +29,7 @@ while [[ $URL != "" ]]; do
         sed -e 's/^"name":"//' | \
         sed -e 's/"$//' | \
         grep -vE "^edge.*" | \
-        grep -vE '^[^-]{4}-.*'
+        grep -vE '^[^-]{4,}-.*'
     )
     for tag in $tags; do
         exitCode=1
@@ -46,7 +46,7 @@ while [[ $URL != "" ]]; do
             sed -e 's/"$//'
         )
         digestOld=$(cat hashes/$tag 2> /dev/null)
-        if [[ $digestCurrent != $digestOld ]] && [[ $digestCurrent != "" ]]; then
+        if [[ "$(echo "$digestCurrent" | sort)" != "$(echo "$digestOld" | sort)" ]] && [[ $digestCurrent != "" ]] || [[ -f hashes/$tag.error ]] || [[ -f "hashes/${tag}@error" ]]; then
             docker pull minio/minio:$tag
             docker pull satantime/minio-server:$tag
             echo "FROM minio/minio:${tag}" > Dockerfile && \
