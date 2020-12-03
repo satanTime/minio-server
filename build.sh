@@ -51,8 +51,9 @@ while [[ $URL != "" ]]; do
             docker pull satantime/minio-server:$tag
             echo "FROM minio/minio:${tag}" > Dockerfile && \
             cat Dockerfile.template >> Dockerfile && \
-            docker build . -t satantime/minio-server:$tag && \
-            docker push satantime/minio-server:$tag && \
+            docker buildx build \
+                --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7 \
+                -t satantime/minio-server:$tag --push . && \
             rm Dockerfile && \
             printf '%s\n' $digestCurrent > hashes/$tag && \
             git add --all && \
