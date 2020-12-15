@@ -52,7 +52,7 @@ while [[ $URL != "" ]]; do
             echo "FROM minio/minio:${tag}" > Dockerfile && \
             cat Dockerfile.template >> Dockerfile && \
             docker buildx build \
-                --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x,linux/arm/v7 \
+                --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x \
                 -t satantime/minio-server:$tag --push . && \
             rm Dockerfile && \
             printf '%s\n' $digestCurrent > hashes/$tag && \
