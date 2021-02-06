@@ -39,6 +39,15 @@ while [[ $URL != "" ]]; do
             echo "$exitCode - https://registry.hub.docker.com/v2/repositories/minio/minio/tags/$tag"
         done
 
+        platforms=$(
+            echo $content | \
+            grep -oE '"architecture":"[^"]+"' | \
+            sed -e 's/^"architecture":"//' | \
+            sed -e 's/"$//' | \
+            sed -e 's/^/linux\//' | \
+            tr '\n' ',' | \
+            sed -e 's/,$//'
+        )
         digestCurrent=$(
             echo $content | \
             grep -oE '"digest":"[^"]+"' | \
@@ -52,7 +61,7 @@ while [[ $URL != "" ]]; do
             echo "FROM minio/minio:${tag}" > Dockerfile && \
             cat Dockerfile.template >> Dockerfile && \
             docker buildx build \
-                --platform linux/amd64,linux/arm64,linux/ppc64le,linux/s390x \
+                --platform $platforms \
                 -t satantime/minio-server:$tag --push . && \
             rm Dockerfile && \
             printf '%s\n' $digestCurrent > hashes/$tag && \
