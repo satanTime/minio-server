@@ -56,8 +56,6 @@ while [[ $URL != "" ]]; do
         )
         digestOld=$(cat hashes/$tag 2> /dev/null)
         if [[ "$(echo "$digestCurrent" | sort)" != "$(echo "$digestOld" | sort)" ]] && [[ $digestCurrent != "" ]] || [[ -f hashes/$tag.error ]] || [[ -f "hashes/${tag}@error" ]]; then
-            docker pull minio/minio:$tag
-            docker pull satantime/minio-server:$tag
             echo "FROM minio/minio:${tag}" > Dockerfile && \
             cat Dockerfile.template >> Dockerfile && \
             docker buildx build \
