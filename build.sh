@@ -45,6 +45,7 @@ while [[ $URL != "" ]]; do
             sed -e 's/^"architecture":"//' | \
             sed -e 's/"$//' | \
             sed -e 's/^/linux\//' | \
+            grep -vE '/unknown$' | \
             tr '\n' ',' | \
             sed -e 's/,$//'
         )
