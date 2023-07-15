@@ -1,0 +1,18 @@
+debug = true
+
+[history]
+  maxAge = 2592000
+  maxEntries = 1000
+
+[worker.containerd]
+  namespace = "minio-server"
+  platforms = [
+    "linux/386*",
+    "linux/amd64*",
+    "linux/arm*",
+    "linux/arm64*",
+    "linux/mips64*",
+    "linux/ppc64le*",
+    "linux/riscv64*",
+    "linux/s390x*",
+  ]

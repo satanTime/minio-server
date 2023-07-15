@@ -60,6 +60,7 @@ while [[ $URL != "" ]]; do
             echo "FROM minio/minio:${tag}" > Dockerfile && \
             cat Dockerfile.template >> Dockerfile && \
             docker buildx build \
+                --builder minio-server \
                 --platform $platforms \
                 -t satantime/minio-server:$tag --push . && \
             rm Dockerfile && \
